@@ -4,427 +4,237 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M-PESA Payment</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style id="dynamic-styles">
+        /* These styles will be dynamically updated */
         :root {
-            --primary-color: #1a8e5f;
-            --secondary-color: #075e54;
-            --accent-color: #25D366;
-            --text-color: #333333;
-            --background-color: #f8f9fa;
-            --error-color: #dc3545;
-            --success-color: #28a745;
+            --primary-color: #3b82f6;
+            --secondary-color: #1e40af;
+            --text-color: #1f2937;
+            --background-color: #f9fafb;
         }
         
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            min-height: 100vh;
-        }
-        
-        .business-logo-placeholder {
-            width: 120px;
-            height: 120px;
-            background-color: #e9ecef;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            margin-bottom: 1.5rem;
-            color: #6c757d;
-            font-size: 0.8rem;
-            border: 2px dashed #ced4da;
-        }
-        
-        .payment-form {
-            background-color: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-        }
-        
-        .payment-form:hover {
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        }
-        
-        .form-input {
-            transition: all 0.3s ease;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-        
-        .form-input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(26, 142, 95, 0.1);
-        }
-        
-        .btn-pay {
+        .btn-primary {
             background-color: var(--primary-color);
-            transition: all 0.3s ease;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
         }
         
-        .btn-pay:hover {
+        .btn-primary:hover {
             background-color: var(--secondary-color);
-            transform: translateY(-2px);
         }
         
-        .btn-pay:active {
-            transform: translateY(1px);
+        .accent-border {
+            border-color: var(--primary-color);
         }
         
-        .powered-by {
-            background-color: rgba(26, 142, 95, 0.05);
-        }
-        
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 3px solid var(--primary-color);
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            display: none;
-            margin: 0 auto;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .status-message {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-        
-        .status-message.active {
-            max-height: 200px;
-            padding: 1rem;
-            margin-top: 1rem;
-            border-radius: 8px;
-        }
-        
-        .success-message {
-            background-color: rgba(40, 167, 69, 0.1);
-            color: var(--success-color);
-        }
-        
-        .error-message {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: var(--error-color);
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --background-color: #1a1a1a;
-                --text-color: #f8f9fa;
-            }
-            
-            .payment-form {
-                background-color: #2a2a2a;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            }
-            
-            .form-input {
-                background-color: #333;
-                border-color: #444;
-                color: #f8f9fa;
-            }
-            
-            .form-input:focus {
-                border-color: var(--accent-color);
-            }
-            
-            .powered-by {
-                background-color: rgba(26, 142, 95, 0.1);
-            }
-        }
-        
-        .service-animation {
-            transition: all 0.3s ease;
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .business-name-placeholder {
-            min-height: 40px;
-            font-size: 1.5rem;
-            font-weight: 600;
+        .accent-text {
             color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* Safari specific fix */
-        @supports (-webkit-appearance:none) {
-            .form-input {
-                -webkit-appearance: none;
-            }
         }
     </style>
 </head>
-<body class="flex flex-col min-h-screen py-8 px-4">
-    <div class="container mx-auto max-w-md">
-        <div class="payment-form p-6 md:p-8 fade-in">
-            <div class="text-center mb-6">
-                <div class="business-logo-placeholder" id="businessLogo">
-                    <i class="fas fa-building text-4xl"></i>
-                </div>
-                <div class="business-name-placeholder" id="businessName">Business Name</div>
-                <p class="text-sm text-gray-500 mt-2">Complete your payment quickly and securely</p>
-            </div>
-            
-            <form id="mpesaPaymentForm" class="space-y-5">
-                <div>
-                    <label for="phoneNumber" class="block text-sm font-medium mb-1">Phone Number</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                            <i class="fas fa-phone"></i>
-                        </span>
-                        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="e.g., 254712345678" 
-                            class="form-input w-full pl-10 py-3 px-4" 
-                            required>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered number starting with 254</p>
-                </div>
-                
-                <div>
-                    <label for="amount" class="block text-sm font-medium mb-1">Amount (KES)</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                            <i class="fas fa-coins"></i>
-                        </span>
-                        <input type="number" id="amount" name="amount" placeholder="e.g., 1000" 
-                            class="form-input w-full pl-10 py-3 px-4" min="1" 
-                            required>
-                    </div>
-                </div>
-                
-                <div>
-                    <label for="service" class="block text-sm font-medium mb-1">Service</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                            <i class="fas fa-tag"></i>
-                        </span>
-                        <select id="service" name="service" 
-                            class="form-input w-full pl-10 py-3 px-4 service-animation bg-white" 
-                            required>
-                            <option value="" disabled selected>Select a service</option>
-                            <option value="Standard">Standard Service</option>
-                            <option value="Premium">Premium Service</option>
-                            <option value="Consultation">Consultation</option>
-                            <option value="Membership">Membership Fee</option>
-                            <option value="Other">Other Payment</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <button type="submit" id="payButton" class="btn-pay w-full py-3 text-white font-medium rounded-lg flex items-center justify-center space-x-2">
-                    <span>Pay Now</span>
-                    <div class="loader" id="paymentLoader"></div>
-                </button>
-            </form>
-            
-            <div id="successMessage" class="status-message success-message">
-                <div class="flex items-start">
-                    <div>
-                        <i class="fas fa-check-circle text-xl mr-2"></i>
-                    </div>
-                    <div>
-                        <p class="font-medium">Payment Initiated Successfully!</p>
-                        <p class="text-sm mt-1">Please check your phone and enter M-PESA PIN to complete payment.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="errorMessage" class="status-message error-message">
-                <div class="flex items-start">
-                    <div>
-                        <i class="fas fa-exclamation-circle text-xl mr-2"></i>
-                    </div>
-                    <div>
-                        <p class="font-medium">Payment Request Failed</p>
-                        <p class="text-sm mt-1" id="errorDetails">There was an error processing your payment request. Please try again.</p>
-                    </div>
-                </div>
-            </div>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="header-branding mb-8 text-center">
+            <img id="business-logo" src="" alt="Business Logo" class="mx-auto max-h-16 mb-4">
+            <h1 id="business-name" class="text-2xl font-bold">Business Name</h1>
         </div>
         
-        <div class="powered-by mt-6 py-3 px-4 rounded-lg text-center fade-in">
-            <p class="text-sm font-medium">Powered by <span class="font-bold text-green-700">CK Marketing Ltd</span></p>
+        <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-6 text-center">M-PESA Payment</h2>
+            
+            <form id="payment-form" class="space-y-4">
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="2547XXXXXXXX" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                           required pattern="254[0-9]{9}">
+                    <p class="text-xs text-gray-500 mt-1">Format: 2547XXXXXXXX (12 digits)</p>
+                </div>
+                
+                <div>
+                    <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Amount (KES)</label>
+                    <input type="number" id="amount" name="amount" min="1" max="150000" placeholder="Enter amount" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                           required>
+                </div>
+                
+                <div>
+                    <label for="service" class="block text-sm font-medium text-gray-700 mb-1">Service</label>
+                    <select id="service" name="service" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            required>
+                        <option value="" disabled selected>Select a service</option>
+                        <!-- Service options will be loaded dynamically -->
+                    </select>
+                </div>
+                
+                <div class="pt-4">
+                    <button type="submit" class="w-full btn-primary py-2 text-center">
+                        Pay Now
+                    </button>
+                </div>
+            </form>
+            
+            <div id="payment-status" class="mt-4 text-center hidden"></div>
+        </div>
+        
+        <div class="footer-branding mt-8 text-center">
+            <p class="text-sm text-gray-500">Powered by <strong>CK Marketing Ltd</strong></p>
         </div>
     </div>
-
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Parse URL parameters for pre-filling form
-            const fillFormFromParams = () => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const phoneParam = urlParams.get('phone');
-                const amountParam = urlParams.get('amount');
-                const serviceParam = urlParams.get('service');
-                const businessNameParam = urlParams.get('business_name');
-                const businessLogoParam = urlParams.get('business_logo');
+        // Business slug is derived from the URL path
+        const pathParts = window.location.pathname.split('/');
+        const businessSlug = pathParts[pathParts.length - 2] || pathParts[pathParts.length - 1];
+        
+        // URL for config.json (normally this would be fetched from a server)
+        const configUrl = '/businesses/config.json';
+        
+        // Function to load business config
+        async function loadBusinessConfig() {
+            try {
+                const response = await fetch(configUrl);
+                const data = await response.json();
                 
-                if (phoneParam) document.getElementById('phoneNumber').value = phoneParam;
-                if (amountParam) document.getElementById('amount').value = amountParam;
+                // Find the business by slug
+                const business = data.businesses.find(b => b.slug === businessSlug);
                 
-                if (serviceParam) {
-                    const serviceSelect = document.getElementById('service');
-                    
-                    // Check if option exists
-                    let optionExists = false;
-                    for (let i = 0; i < serviceSelect.options.length; i++) {
-                        if (serviceSelect.options[i].value === serviceParam) {
-                            serviceSelect.selectedIndex = i;
-                            optionExists = true;
-                            break;
-                        }
-                    }
-                    
-                    // If option doesn't exist, create it
-                    if (!optionExists && serviceParam) {
-                        const option = document.createElement('option');
-                        option.value = serviceParam;
-                        option.text = serviceParam;
-                        serviceSelect.add(option);
-                        serviceSelect.value = serviceParam;
-                    }
+                if (business) {
+                    applyBusinessBranding(business);
+                } else {
+                    console.error('Business not found');
                 }
-                
-                if (businessNameParam) {
-                    document.getElementById('businessName').textContent = businessNameParam;
-                    document.title = businessNameParam + " - M-PESA Payment";
-                }
-                
-                if (businessLogoParam) {
-                    const logoPlaceholder = document.getElementById('businessLogo');
-                    logoPlaceholder.innerHTML = '';
-                    const logoImg = document.createElement('img');
-                    logoImg.src = businessLogoParam;
-                    logoImg.alt = businessNameParam || 'Business Logo';
-                    logoImg.className = 'w-full h-full object-contain rounded-full';
-                    logoPlaceholder.appendChild(logoImg);
-                }
-            };
+            } catch (error) {
+                console.error('Error loading business config:', error);
+            }
+        }
+        
+        // Apply branding based on business config
+        function applyBusinessBranding(business) {
+            // Update page title
+            document.title = `${business.name} - M-PESA Payment`;
             
-            // Execute parameter filling
-            fillFormFromParams();
+            // Update logo and business name
+            document.getElementById('business-logo').src = business.logo;
+            document.getElementById('business-logo').alt = business.name;
+            document.getElementById('business-name').textContent = business.name;
             
-            // Phone number validation
-            function validatePhoneNumber(phone) {
-                const phoneRegex = /^254[1-9]\d{8}$/;
-                return phoneRegex.test(phone);
+            // Update colors
+            const primaryColor = business.primaryColor || '#3b82f6';
+            const secondaryColor = adjustColor(primaryColor, -20); // Darker version for hover
+            
+            const styleEl = document.getElementById('dynamic-styles');
+            const styleSheet = styleEl.sheet;
+            
+            // Update CSS variables
+            document.documentElement.style.setProperty('--primary-color', primaryColor);
+            document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+            
+            // Populate service dropdown
+            const serviceSelect = document.getElementById('service');
+            if (business.services && business.services.length > 0) {
+                business.services.forEach(service => {
+                    const option = document.createElement('option');
+                    option.value = service;
+                    option.textContent = service;
+                    serviceSelect.appendChild(option);
+                });
             }
             
-            // Handle form submission
-            const form = document.getElementById('mpesaPaymentForm');
-            const payButton = document.getElementById('payButton');
-            const loader = document.getElementById('paymentLoader');
-            const successMessage = document.getElementById('successMessage');
-            const errorMessage = document.getElementById('errorMessage');
-            const errorDetails = document.getElementById('errorDetails');
+            // Store business info for payment processing
+            window.businessData = {
+                name: business.name,
+                shortcode: business.shortcode
+            };
+        }
+        
+        // Helper function to adjust color brightness
+        function adjustColor(color, amount) {
+            return '#' + color.replace(/^#/, '').replace(/../g, color => 
+                ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2)
+            );
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load business configuration
+            loadBusinessConfig();
             
-            form.addEventListener('submit', function(e) {
+            // Pre-fill form from URL parameters if available
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.has('phone')) {
+                document.getElementById('phone').value = urlParams.get('phone');
+            }
+            
+            if (urlParams.has('amount')) {
+                document.getElementById('amount').value = urlParams.get('amount');
+            }
+            
+            if (urlParams.has('service')) {
+                const service = urlParams.get('service');
+                // We'll need to handle this after services are loaded
+                window.selectedService = service;
+            }
+            
+            // Form submission
+            document.getElementById('payment-form').addEventListener('submit', function(e) {
                 e.preventDefault();
+                initiateSTKPush();
+            });
+        });
+        
+        // Function to initiate STK push
+        function initiateSTKPush() {
+            const phone = document.getElementById('phone').value;
+            const amount = document.getElementById('amount').value;
+            const service = document.getElementById('service').value;
+            const statusDiv = document.getElementById('payment-status');
+            
+            // Show loading status
+            statusDiv.innerHTML = '<div class="flex items-center justify-center"><svg class="animate-spin h-5 w-5 mr-3 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Sending payment request...</span></div>';
+            statusDiv.classList.remove('hidden');
+            
+            // In a real implementation, this would call your serverless function
+            // Here we're simulating it with a timeout
+            setTimeout(() => {
+                // Success simulation
+                statusDiv.innerHTML = '<div class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Payment request sent! Check your phone to complete payment.</div>';
                 
-                // Reset messages
-                successMessage.classList.remove('active');
-                errorMessage.classList.remove('active');
-                
-                const phoneNumber = document.getElementById('phoneNumber').value.trim();
-                const amount = document.getElementById('amount').value.trim();
-                const service = document.getElementById('service').value;
-                
-                // Validate phone number
-                if (!validatePhoneNumber(phoneNumber)) {
-                    errorDetails.textContent = "Please enter a valid Kenyan phone number starting with 254.";
-                    errorMessage.classList.add('active');
-                    return;
-                }
-                
-                // Validate amount
-                if (amount <= 0) {
-                    errorDetails.textContent = "Please enter a valid amount greater than 0.";
-                    errorMessage.classList.add('active');
-                    return;
-                }
-                
-                // Show loader and disable button
-                loader.style.display = 'block';
-                payButton.disabled = true;
-                
-                // This would be replaced with actual API call in production
-                // Simulating API call for demonstration
-                setTimeout(function() {
-                    // For demo: show success message (this would be based on actual API response)
-                    loader.style.display = 'none';
-                    payButton.disabled = false;
-                    
-                    // For demo: randomly show success or error (in production, this would be based on API response)
-                    const isSuccess = Math.random() > 0.2; // 80% success rate for demo
-                    
-                    if (isSuccess) {
-                        successMessage.classList.add('active');
-                    } else {
-                        errorDetails.textContent = "There was an error connecting to M-PESA. Please try again later.";
-                        errorMessage.classList.add('active');
-                    }
-                }, 2000);
-                
-                // In a real implementation, this is where you would make the actual API call
-                // The code below is commented out as it represents what you would implement
+                // In reality, you would make an API call to your serverless function:
                 /*
-                // Prepare data for API call
-                const paymentData = {
-                    phoneNumber: phoneNumber,
-                    amount: amount,
-                    service: service
-                };
-                
-                // Make API call to your serverless function
-                fetch('https://your-serverless-function-url.com/stk-push', {
+                fetch('https://your-serverless-function-url', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(paymentData),
+                    body: JSON.stringify({
+                        phone: phone,
+                        amount: amount,
+                        service: service,
+                        businessShortcode: window.businessData.shortcode
+                    })
                 })
                 .then(response => response.json())
                 .then(data => {
-                    loader.style.display = 'none';
-                    payButton.disabled = false;
-                    
                     if (data.success) {
-                        successMessage.classList.add('active');
+                        statusDiv.innerHTML = '<div class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Payment request sent! Check your phone to complete payment.</div>';
                     } else {
-                        errorDetails.textContent = data.message || "Payment request failed. Please try again.";
-                        errorMessage.classList.add('active');
+                        statusDiv.innerHTML = `<div class="text-red-600"><i class="fas fa-exclamation-circle mr-2"></i>Error: ${data.message}</div>`;
                     }
                 })
                 .catch(error => {
-                    loader.style.display = 'none';
-                    payButton.disabled = false;
-                    errorDetails.textContent = "Network error. Please check your connection and try again.";
-                    errorMessage.classList.add('active');
+                    statusDiv.innerHTML = '<div class="text-red-600"><i class="fas fa-exclamation-circle mr-2"></i>An error occurred while processing your request.</div>';
                     console.error('Error:', error);
                 });
                 */
-            });
-        });
+            }, 2000);
+        }
     </script>
 </body>
 </html>

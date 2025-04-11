@@ -1,0 +1,43 @@
+/* Base styles with customizable variables */
+:root {
+    --primary-color: #3b82f6;
+    --secondary-color: #1e40af;
+    --text-color: #1f2937;
+    --background-color: #f9fafb;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    font-family: var(--font-family);
+    color: var(--text-color);
+    background-color: var(--background-color);
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+  }
+  
+  .header-branding {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .business-logo {
+    max-height: 80px;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+  
+  .footer-branding {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
