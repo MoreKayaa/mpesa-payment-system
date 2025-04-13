@@ -10,6 +10,12 @@ const CONSUMER_SECRET = functions.config().mpesa.consumer_secret;
 const PASSKEY = functions.config().mpesa.passkey;
 const AUTH_URL = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
 const STK_PUSH_URL = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+const serviceAccount = require('C:/Users/User/Downloads/mpesa-payment-system-firebase-adminsdk-fbsvc-27a91aaf3b.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://mpesa-payment-system.firebaseio.com'
+});
 
 // STK Push function
 exports.stkPush = functions.https.onRequest(async (req, res) => {
@@ -39,7 +45,7 @@ exports.stkPush = functions.https.onRequest(async (req, res) => {
     // Get access token
     const auth = Buffer.from(`${CONSUMER_KEY}:${CONSUMER_SECRET}`).toString('base64');
     const tokenResponse = await axios.get(AUTH_URL, {
-      headers: { "Authorization": `Basic ${auth}` }
+      headers: { 'Authorization': `Basic ${auth}` }
     });
     
     const accessToken = tokenResponse.data.access_token;
@@ -53,24 +59,24 @@ exports.stkPush = functions.https.onRequest(async (req, res) => {
     
     // Prepare STK push request
     const stkRequest = {
-      "BusinessShortCode": businessShortCode,
-      "Password": password,
-      "Timestamp": timestamp,
-      "TransactionType": "CustomerPayBillOnline",
-      "Amount": parseInt(amount),
-      "PartyA": phoneNumber,
-      "PartyB": businessShortCode,
-      "PhoneNumber": phoneNumber,
-      "CallBackURL": callbackUrl,
-      "AccountReference": accountReference || "Payment",
-      "TransactionDesc": "Payment for services"
+      'BusinessShortCode': businessShortCode,
+      'Password': password,
+      'Timestamp': timestamp,
+      'TransactionType': 'CustomerPayBillOnline',
+      'Amount': parseInt(amount),
+      'PartyA': phoneNumber,
+      'PartyB': businessShortCode,
+      'PhoneNumber': phoneNumber,
+      'CallBackURL': callbackUrl,
+      'AccountReference': accountReference || 'Payment',
+      'TransactionDesc': 'Payment for services'
     };
     
     // Send STK push request
     const stkResponse = await axios.post(STK_PUSH_URL, stkRequest, {
       headers: {
-        "Authorization": `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
       }
     });
     
