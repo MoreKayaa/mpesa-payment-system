@@ -1,0 +1,12 @@
+specVersion: "v1"
+serviceId: "mpesa-payment-system"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "mpesa-payment-system-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]
