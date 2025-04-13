@@ -1,9 +1,66 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if false;
+    // Global admin check
+    function isAdmin() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Business owner check
+    function isBusinessOwner(businessId) {
+      return request.auth.uid != null && 
+             get(/databases/$(database)/documents/businesses/$(businessId)).data.owner == request.auth.uid;
+    }
+    
+    // Businesses collection
+    match /businesses/{businessId} {
+      allow read;  // Anyone can read business info (for payment pages)
+      allow create: if isAdmin();
+      allow update: if isAdmin() || isBusinessOwner(businessId);
+      allow delete: if isAdmin();
+      
+      // Business services subcollection
+      match /services/{serviceId} {
+        allow read;
+        allow write: if isAdmin() || isBusinessOwner(businessId);
+      }
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if request.auth.uid == userId || isAdmin();
+      allow create: if isAdmin();
+      allow update: if request.auth.uid == userId || isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Transactions collection
+    match /transactions/{transactionId} {
+      allow read: if isAdmin() || 
+                   resource.data.businessId in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.businesses;
+      allow create; // Allow create for payment form submissions
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Settings collection
+    match /settings/global {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /settings/{settingId} {
+      allow read: if isAdmin() || 
+                   settingId.matches('business-.*') && 
+                   isBusinessOwner(settingId.replace('business-', ''));
+      allow write: if isAdmin();
+    }
+    
+    // Webhooks collection
+    match /webhooks/{webhookId} {
+      allow read: if isAdmin() || 
+                   resource.data.businessId in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.businesses;
+      allow write: if isAdmin();
     }
   }
 }
