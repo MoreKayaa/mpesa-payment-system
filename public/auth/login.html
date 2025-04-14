@@ -1,0 +1,118 @@
+<!-- public/auth/login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - M-PESA Payment System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full p-8 bg-white rounded-lg shadow-md">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-gray-800">M-PESA Payment System</h1>
+            <p class="text-gray-600">Sign in to your account</p>
+        </div>
+        
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="email" name="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+            </div>
+            
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input id="remember_me" name="remember_me" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                    <label for="remember_me" class="ml-2 block text-sm text-gray-900">Remember me</label>
+                </div>
+                
+                <div class="text-sm">
+                    <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Forgot your password?</a>
+                </div>
+            </div>
+            
+            <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Sign in
+                </button>
+            </div>
+            
+            <div id="errorMessage" class="text-red-500 text-center hidden"></div>
+        </form>
+    </div>
+    
+    <script src="/js/firebase-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    // Check user role in Firestore
+                    firebase.firestore().collection('users').doc(user.uid).get()
+                        .then(doc => {
+                            if (doc.exists) {
+                                const userData = doc.data();
+                                if (userData.role === 'admin') {
+                                    window.location.href = '/admin/';
+                                } else {
+                                    // Redirect to business dashboard based on their assigned business
+                                    if (userData.businesses && userData.businesses.length > 0) {
+                                        const businessId = userData.businesses[0];
+                                        firebase.firestore().collection('businesses').doc(businessId).get()
+                                            .then(businessDoc => {
+                                                if (businessDoc.exists) {
+                                                    const businessData = businessDoc.data();
+                                                    window.location.href = `/${businessData.slug}/`;
+                                                } else {
+                                                    window.location.href = '/businesses/';
+                                                }
+                                            });
+                                    } else {
+                                        window.location.href = '/businesses/';
+                                    }
+                                }
+                            } else {
+                                // No user document, create one
+                                firebase.firestore().collection('users').doc(user.uid).set({
+                                    email: user.email,
+                                    displayName: user.displayName || '',
+                                    phoneNumber: user.phoneNumber || '',
+                                    role: 'business', // Default role
+                                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                                    status: 'active'
+                                });
+                                window.location.href = '/businesses/';
+                            }
+                        });
+                }
+            });
+            
+            // Handle login form submission
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const errorMessage = document.getElementById('errorMessage');
+                
+                errorMessage.classList.add('hidden');
+                
+                firebase.auth().signInWithEmailAndPassword(email, password)
+                    .catch(function(error) {
+                        errorMessage.textContent = error.message;
+                        errorMessage.classList.remove('hidden');
+                    });
+            });
+        });
+    </script>
+</body>
+</html>
