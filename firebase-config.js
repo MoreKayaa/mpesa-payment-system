@@ -1,10 +1,10 @@
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID",
+    apiKey: "AIzaSyD1_OtYRfpV3Zq2tjbbcO1e2gE_xfZ-evE",
+    authDomain: "mpesa-payment-system.firebaseapp.com",
+    projectId: "mpesa-payment-system",
+    storageBucket: "mpesa-payment-system.firebasestorage.app",
+    messagingSenderId: "823202358398",
+    appId: "1:823202358398:web:0416bd58ed8ebcd8b2642f",
     measurementId: "YOUR_MEASUREMENT_ID" // If using Analytics
   };
   
