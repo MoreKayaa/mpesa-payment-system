@@ -1,8 +1,15 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const axios = require('axios');
+const serviceAccount = require('C:\Users\User\Desktop\Projects\MPESA Web-App\mpesa-payment-system\mpesa-payment-system\serviceAccountKey.json')
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket: 'mpesa-payment-system.firebasestorage.app' 
+  databaseURL: 'mpesa-payment-system.firebaseio.com'
+});
 
-admin.initializeApp();
+const db = admin.firestore();
+const bucket = admin.storage().bucket();
 
 // M-PESA API configuration
 const CONSUMER_KEY = functions.config().mpesa.consumer_key;
@@ -10,12 +17,6 @@ const CONSUMER_SECRET = functions.config().mpesa.consumer_secret;
 const PASSKEY = functions.config().mpesa.passkey;
 const AUTH_URL = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
 const STK_PUSH_URL = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
-const serviceAccount = require('C:/Users/User/Downloads/mpesa-payment-system-firebase-adminsdk-fbsvc-27a91aaf3b.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://mpesa-payment-system.firebaseio.com'
-});
 
 // STK Push function
 exports.stkPush = functions.https.onRequest(async (req, res) => {
