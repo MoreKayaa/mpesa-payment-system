@@ -27,10 +27,7 @@
       "**/node_modules/**"
     ],
     "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
+      {"source": "/:slug", "destination": "/index.html"}
     ]
   },
   "storage": {
