@@ -1,227 +1,308 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CK Marketing - M-PESA Admin Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
-</head>
-<body class="bg-gray-100">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-100">
     <div id="login-screen" class="h-screen flex items-center justify-center">
-        <div class="bg-white p-8 rounded-lg shadow-md w-96">
-            <h1 class="text-2xl font-bold mb-6 text-center">Admin Login</h1>
-            <form id="login-form">
-                <div class="mb-4">
-                    <label class="block text-gray-700 mb-2" for="username">Username</label>
-                    <input class="w-full px-3 py-2 border border-gray-300 rounded-md" type="text" id="username" required>
-                </div>
-                <div class="mb-6">
-                    <label class="block text-gray-700 mb-2" for="password">Password</label>
-                    <input class="w-full px-3 py-2 border border-gray-300 rounded-md" type="password" id="password" required>
-                </div>
-                <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition">Login</button>
-            </form>
-        </div>
+      <div class="bg-white p-8 rounded-lg shadow-md w-96">
+        <h1 class="text-2xl font-bold mb-6 text-center">Admin Login</h1>
+        <form id="login-form">
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2" for="username"
+              >Username</label
+            >
+            <input
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
+              type="text"
+              id="username"
+              required
+            />
+          </div>
+          <div class="mb-6">
+            <label class="block text-gray-700 mb-2" for="password"
+              >Password</label
+            >
+            <input
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
+              type="password"
+              id="password"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </div>
 
     <div id="dashboard" class="hidden">
-        <nav class="bg-white shadow-md">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <h1 class="text-xl font-bold">CK Marketing Admin</h1>
-                    </div>
-                    <div class="flex items-center">
-                        <button id="logout-btn" class="text-gray-500 hover:text-gray-700">Logout</button>
-                    </div>
-                </div>
+      <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+            <div class="flex items-center">
+              <h1 class="text-xl font-bold">CK Marketing Admin</h1>
             </div>
-        </nav>
-
-        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <div class="px-4 py-6 sm:px-0">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold">Business Clients</h2>
-                    <button id="add-business-btn" class="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition">
-                        Add New Business
-                    </button>
-                </div>
-
-                <div class="bg-white shadow overflow-hidden sm:rounded-md">
-                    <ul id="business-list" class="divide-y divide-gray-200">
-                        <!-- Business items will be inserted here -->
-                    </ul>
-                </div>
+            <div class="flex items-center">
+              <button id="logout-btn" class="text-gray-500 hover:text-gray-700">
+                Logout
+              </button>
             </div>
+          </div>
         </div>
+      </nav>
+
+      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">Business Clients</h2>
+            <button
+              id="add-business-btn"
+              class="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition"
+            >
+              Add New Business
+            </button>
+          </div>
+
+          <div class="bg-white shadow overflow-hidden sm:rounded-md">
+            <ul id="business-list" class="divide-y divide-gray-200">
+              <!-- Business items will be inserted here -->
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Add Business Modal -->
-    <div id="add-business-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
-        <div class="bg-white rounded-lg p-8 max-w-md w-full">
-            <h2 class="text-xl font-bold mb-4">Add New Business</h2>
-            <form id="add-business-form">
-                <div class="mb-4">
-                    <label class="block text-gray-700 mb-2" for="business-name">Business Name</label>
-                    <input class="w-full px-3 py-2 border border-gray-300 rounded-md" type="text" id="business-name" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 mb-2" for="business-slug">Business URL Slug (no spaces)</label>
-                    <input class="w-full px-3 py-2 border border-gray-300 rounded-md" type="text" id="business-slug" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 mb-2" for="business-logo">Logo URL</label>
-                    <input class="w-full px-3 py-2 border border-gray-300 rounded-md" type="url" id="business-logo" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 mb-2" for="primary-color">Primary Color</label>
-                    <input class="w-full px-3 py-2 border border-gray-300 rounded-md" type="color" id="primary-color" value="#3b82f6">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 mb-2" for="business-shortcode">M-PESA Business Shortcode</label>
-                    <input class="w-full px-3 py-2 border border-gray-300 rounded-md" type="text" id="business-shortcode" required>
-                </div>
-                <div class="flex justify-end space-x-4">
-                    <button type="button" id="cancel-add-business" class="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
-                        Cancel
-                    </button>
-                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition">
-                        Add Business
-                    </button>
-                </div>
-            </form>
-        </div>
+    <div
+      id="add-business-modal"
+      class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden"
+    >
+      <div class="bg-white rounded-lg p-8 max-w-md w-full">
+        <h2 class="text-xl font-bold mb-4">Add New Business</h2>
+        <form id="add-business-form">
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2" for="business-name"
+              >Business Name</label
+            >
+            <input
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
+              type="text"
+              id="business-name"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2" for="business-slug"
+              >Business URL Slug (no spaces)</label
+            >
+            <input
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
+              type="text"
+              id="business-slug"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2" for="business-logo"
+              >Logo URL</label
+            >
+            <input
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
+              type="url"
+              id="business-logo"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2" for="primary-color"
+              >Primary Color</label
+            >
+            <input
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
+              type="color"
+              id="primary-color"
+              value="#3b82f6"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2" for="business-shortcode"
+              >M-PESA Business Shortcode</label
+            >
+            <input
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
+              type="text"
+              id="business-shortcode"
+              required
+            />
+          </div>
+          <div class="flex justify-end space-x-4">
+            <button
+              type="button"
+              id="cancel-add-business"
+              class="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition"
+            >
+              Add Business
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script>
-        // Simple admin authentication
-        const adminCredentials = {
-            username: 'admin',
-            password: 'securepassword123'  // Change this in production
+      // Simple admin authentication
+      const adminCredentials = {
+        username: "admin",
+        password: "securepassword123", // Change this in production
+      };
+
+      // Sample businesses data structure
+      let businesses = [];
+
+      // DOM Elements
+      const loginScreen = document.getElementById("login-screen");
+      const dashboard = document.getElementById("dashboard");
+      const loginForm = document.getElementById("login-form");
+      const logoutBtn = document.getElementById("logout-btn");
+      const businessList = document.getElementById("business-list");
+      const addBusinessBtn = document.getElementById("add-business-btn");
+      const addBusinessModal = document.getElementById("add-business-modal");
+      const addBusinessForm = document.getElementById("add-business-form");
+      const cancelAddBusiness = document.getElementById("cancel-add-business");
+
+      // Login handling
+      loginForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        if (
+          username === adminCredentials.username &&
+          password === adminCredentials.password
+        ) {
+          // Store authentication in localStorage
+          localStorage.setItem("adminAuthenticated", "true");
+
+          // Show dashboard
+          loginScreen.classList.add("hidden");
+          dashboard.classList.remove("hidden");
+
+          // Load businesses data
+          loadBusinesses();
+        } else {
+          alert("Invalid username or password");
+        }
+      });
+
+      // Check if admin is already authenticated
+      function checkAuthentication() {
+        if (localStorage.getItem("adminAuthenticated") === "true") {
+          loginScreen.classList.add("hidden");
+          dashboard.classList.remove("hidden");
+          loadBusinesses();
+        }
+      }
+
+      // Logout functionality
+      logoutBtn.addEventListener("click", function () {
+        localStorage.removeItem("adminAuthenticated");
+        dashboard.classList.add("hidden");
+        loginScreen.classList.remove("hidden");
+      });
+
+      // Add business modal handling
+      addBusinessBtn.addEventListener("click", function () {
+        addBusinessModal.classList.remove("hidden");
+      });
+
+      cancelAddBusiness.addEventListener("click", function () {
+        addBusinessModal.classList.add("hidden");
+        addBusinessForm.reset();
+      });
+
+      // Add business form submission
+      addBusinessForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const newBusiness = {
+          id: Date.now().toString(),
+          name: document.getElementById("business-name").value,
+          slug: document
+            .getElementById("business-slug")
+            .value.toLowerCase()
+            .replace(/\s+/g, ""),
+          logo: document.getElementById("business-logo").value,
+          primaryColor: document.getElementById("primary-color").value,
+          shortcode: document.getElementById("business-shortcode").value,
         };
 
-        // Sample businesses data structure
-        let businesses = [];
+        // Add new business to array
+        businesses.push(newBusiness);
 
-        // DOM Elements
-        const loginScreen = document.getElementById('login-screen');
-        const dashboard = document.getElementById('dashboard');
-        const loginForm = document.getElementById('login-form');
-        const logoutBtn = document.getElementById('logout-btn');
-        const businessList = document.getElementById('business-list');
-        const addBusinessBtn = document.getElementById('add-business-btn');
-        const addBusinessModal = document.getElementById('add-business-modal');
-        const addBusinessForm = document.getElementById('add-business-form');
-        const cancelAddBusiness = document.getElementById('cancel-add-business');
+        // Save to localStorage
+        saveBusinesses();
 
-        // Login handling
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            if (username === adminCredentials.username && password === adminCredentials.password) {
-                // Store authentication in localStorage
-                localStorage.setItem('adminAuthenticated', 'true');
-                
-                // Show dashboard
-                loginScreen.classList.add('hidden');
-                dashboard.classList.remove('hidden');
-                
-                // Load businesses data
-                loadBusinesses();
-            } else {
-                alert('Invalid username or password');
-            }
-        });
+        // Update the UI
+        renderBusinessList();
 
-        // Check if admin is already authenticated
-        function checkAuthentication() {
-            if (localStorage.getItem('adminAuthenticated') === 'true') {
-                loginScreen.classList.add('hidden');
-                dashboard.classList.remove('hidden');
-                loadBusinesses();
-            }
+        // Close modal and reset form
+        addBusinessModal.classList.add("hidden");
+        addBusinessForm.reset();
+
+        // Create the business page
+        createBusinessPage(newBusiness);
+      });
+
+      // Load businesses from localStorage
+      function loadBusinesses() {
+        const storedBusinesses = localStorage.getItem("businesses");
+        if (storedBusinesses) {
+          businesses = JSON.parse(storedBusinesses);
+          renderBusinessList();
         }
+      }
 
-        // Logout functionality
-        logoutBtn.addEventListener('click', function() {
-            localStorage.removeItem('adminAuthenticated');
-            dashboard.classList.add('hidden');
-            loginScreen.classList.remove('hidden');
-        });
+      // Save businesses to localStorage
+      function saveBusinesses() {
+        localStorage.setItem("businesses", JSON.stringify(businesses));
+      }
 
-        // Add business modal handling
-        addBusinessBtn.addEventListener('click', function() {
-            addBusinessModal.classList.remove('hidden');
-        });
+      // Render the business list in the dashboard
+      function renderBusinessList() {
+        businessList.innerHTML = "";
 
-        cancelAddBusiness.addEventListener('click', function() {
-            addBusinessModal.classList.add('hidden');
-            addBusinessForm.reset();
-        });
-
-        // Add business form submission
-        addBusinessForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const newBusiness = {
-                id: Date.now().toString(),
-                name: document.getElementById('business-name').value,
-                slug: document.getElementById('business-slug').value.toLowerCase().replace(/\s+/g, ''),
-                logo: document.getElementById('business-logo').value,
-                primaryColor: document.getElementById('primary-color').value,
-                shortcode: document.getElementById('business-shortcode').value
-            };
-            
-            // Add new business to array
-            businesses.push(newBusiness);
-            
-            // Save to localStorage
-            saveBusinesses();
-            
-            // Update the UI
-            renderBusinessList();
-            
-            // Close modal and reset form
-            addBusinessModal.classList.add('hidden');
-            addBusinessForm.reset();
-            
-            // Create the business page
-            createBusinessPage(newBusiness);
-        });
-
-        // Load businesses from localStorage
-        function loadBusinesses() {
-            const storedBusinesses = localStorage.getItem('businesses');
-            if (storedBusinesses) {
-                businesses = JSON.parse(storedBusinesses);
-                renderBusinessList();
-            }
-        }
-
-        // Save businesses to localStorage
-        function saveBusinesses() {
-            localStorage.setItem('businesses', JSON.stringify(businesses));
-        }
-
-        // Render the business list in the dashboard
-        function renderBusinessList() {
-            businessList.innerHTML = '';
-            
-            if (businesses.length === 0) {
-                businessList.innerHTML = `
+        if (businesses.length === 0) {
+          businessList.innerHTML = `
                     <li class="p-4 text-center text-gray-500">
                         No businesses added yet. Click "Add New Business" to get started.
                     </li>
                 `;
-                return;
-            }
-            
-            businesses.forEach(business => {
-                const businessElement = document.createElement('li');
-                businessElement.innerHTML = `
+          return;
+        }
+
+        businesses.forEach((business) => {
+          const businessElement = document.createElement("li");
+          businessElement.innerHTML = `
                     <div class="px-4 py-4 flex items-center justify-between">
                         <div class="flex items-center">
                             <img src="${business.logo}" alt="${business.name}" class="h-10 w-10 mr-4 object-contain">
@@ -243,55 +324,63 @@
                         </div>
                     </div>
                 `;
-                businessList.appendChild(businessElement);
-            });
-            
-            // Add event listeners for edit and delete buttons
-            document.querySelectorAll('.edit-business').forEach(button => {
-                button.addEventListener('click', function() {
-                    const businessId = this.getAttribute('data-id');
-                    editBusiness(businessId);
-                });
-            });
-            
-            document.querySelectorAll('.delete-business').forEach(button => {
-                button.addEventListener('click', function() {
-                    const businessId = this.getAttribute('data-id');
-                    deleteBusiness(businessId);
-                });
-            });
-        }
+          businessList.appendChild(businessElement);
+        });
 
-        // Function to simulate creating a business page
-        function createBusinessPage(business) {
-            console.log(`Creating page for ${business.name} at /businesses/${business.slug}`);
-            
-            // In a real implementation, this would generate the HTML file
-            // and push it to GitHub, or update a configuration file
-            
-            alert(`Business page created for ${business.name}. In a production environment, this would create the actual page.`);
-        }
+        // Add event listeners for edit and delete buttons
+        document.querySelectorAll(".edit-business").forEach((button) => {
+          button.addEventListener("click", function () {
+            const businessId = this.getAttribute("data-id");
+            editBusiness(businessId);
+          });
+        });
 
-        // Edit business function
-        function editBusiness(businessId) {
-            const business = businesses.find(b => b.id === businessId);
-            if (!business) return;
-            
-            // In a real implementation, show an edit modal
-            alert(`Edit functionality would be implemented here for ${business.name}`);
-        }
+        document.querySelectorAll(".delete-business").forEach((button) => {
+          button.addEventListener("click", function () {
+            const businessId = this.getAttribute("data-id");
+            deleteBusiness(businessId);
+          });
+        });
+      }
 
-        // Delete business function
-        function deleteBusiness(businessId) {
-            if (confirm('Are you sure you want to delete this business?')) {
-                businesses = businesses.filter(business => business.id !== businessId);
-                saveBusinesses();
-                renderBusinessList();
-            }
-        }
+      // Function to simulate creating a business page
+      function createBusinessPage(business) {
+        console.log(
+          `Creating page for ${business.name} at /businesses/${business.slug}`,
+        );
 
-        // Initialize the dashboard
-        checkAuthentication();
+        // In a real implementation, this would generate the HTML file
+        // and push it to GitHub, or update a configuration file
+
+        alert(
+          `Business page created for ${business.name}. In a production environment, this would create the actual page.`,
+        );
+      }
+
+      // Edit business function
+      function editBusiness(businessId) {
+        const business = businesses.find((b) => b.id === businessId);
+        if (!business) return;
+
+        // In a real implementation, show an edit modal
+        alert(
+          `Edit functionality would be implemented here for ${business.name}`,
+        );
+      }
+
+      // Delete business function
+      function deleteBusiness(businessId) {
+        if (confirm("Are you sure you want to delete this business?")) {
+          businesses = businesses.filter(
+            (business) => business.id !== businessId,
+          );
+          saveBusinesses();
+          renderBusinessList();
+        }
+      }
+
+      // Initialize the dashboard
+      checkAuthentication();
     </script>
-</body>
+  </body>
 </html>

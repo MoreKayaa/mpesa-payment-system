@@ -1,393 +1,465 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>M-PESA Payment</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
+      :root {
+        --primary-color: #1a8e5f;
+        --secondary-color: #075e54;
+        --accent-color: #25d366;
+        --text-color: #333333;
+        --background-color: #f8f9fa;
+        --error-color: #dc3545;
+        --success-color: #28a745;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        min-height: 100vh;
+      }
+
+      .business-logo-placeholder {
+        width: 120px;
+        height: 120px;
+        background-color: #e9ecef;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        margin-bottom: 1.5rem;
+        color: #6c757d;
+        font-size: 0.8rem;
+        border: 2px dashed #ced4da;
+      }
+
+      .payment-form {
+        background-color: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .payment-form:hover {
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-input {
+        transition: all 0.3s ease;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+
+      .form-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(26, 142, 95, 0.1);
+      }
+
+      .btn-pay {
+        background-color: var(--primary-color);
+        transition: all 0.3s ease;
+      }
+
+      .btn-pay:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
+      }
+
+      .btn-pay:active {
+        transform: translateY(1px);
+      }
+
+      .powered-by {
+        background-color: rgba(26, 142, 95, 0.05);
+      }
+
+      .loader {
+        border: 3px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 3px solid var(--primary-color);
+        width: 24px;
+        height: 24px;
+        animation: spin 1s linear infinite;
+        display: none;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .status-message {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+
+      .status-message.active {
+        max-height: 200px;
+        padding: 1rem;
+        margin-top: 1rem;
+        border-radius: 8px;
+      }
+
+      .success-message {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: var(--success-color);
+      }
+
+      .error-message {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: var(--error-color);
+      }
+
+      @media (prefers-color-scheme: dark) {
         :root {
-            --primary-color: #1a8e5f;
-            --secondary-color: #075e54;
-            --accent-color: #25D366;
-            --text-color: #333333;
-            --background-color: #f8f9fa;
-            --error-color: #dc3545;
-            --success-color: #28a745;
+          --background-color: #1a1a1a;
+          --text-color: #f8f9fa;
         }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            min-height: 100vh;
-        }
-        
-        .business-logo-placeholder {
-            width: 120px;
-            height: 120px;
-            background-color: #e9ecef;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            margin-bottom: 1.5rem;
-            color: #6c757d;
-            font-size: 0.8rem;
-            border: 2px dashed #ced4da;
-        }
-        
+
         .payment-form {
-            background-color: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
+          background-color: #2a2a2a;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
-        
-        .payment-form:hover {
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        }
-        
+
         .form-input {
-            transition: all 0.3s ease;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+          background-color: #333;
+          border-color: #444;
+          color: #f8f9fa;
         }
-        
+
         .form-input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(26, 142, 95, 0.1);
+          border-color: var(--accent-color);
         }
-        
-        .btn-pay {
-            background-color: var(--primary-color);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-pay:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-2px);
-        }
-        
-        .btn-pay:active {
-            transform: translateY(1px);
-        }
-        
+
         .powered-by {
-            background-color: rgba(26, 142, 95, 0.05);
+          background-color: rgba(26, 142, 95, 0.1);
         }
-        
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 3px solid var(--primary-color);
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            display: none;
-            margin: 0 auto;
+      }
+
+      .service-animation {
+        transition: all 0.3s ease;
+      }
+
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-        
-        .status-message {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
+      }
+
+      .business-name-placeholder {
+        min-height: 40px;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Safari specific fix */
+      @supports (-webkit-appearance: none) {
+        .form-input {
+          -webkit-appearance: none;
         }
-        
-        .status-message.active {
-            max-height: 200px;
-            padding: 1rem;
-            margin-top: 1rem;
-            border-radius: 8px;
-        }
-        
-        .success-message {
-            background-color: rgba(40, 167, 69, 0.1);
-            color: var(--success-color);
-        }
-        
-        .error-message {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: var(--error-color);
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --background-color: #1a1a1a;
-                --text-color: #f8f9fa;
-            }
-            
-            .payment-form {
-                background-color: #2a2a2a;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            }
-            
-            .form-input {
-                background-color: #333;
-                border-color: #444;
-                color: #f8f9fa;
-            }
-            
-            .form-input:focus {
-                border-color: var(--accent-color);
-            }
-            
-            .powered-by {
-                background-color: rgba(26, 142, 95, 0.1);
-            }
-        }
-        
-        .service-animation {
-            transition: all 0.3s ease;
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .business-name-placeholder {
-            min-height: 40px;
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* Safari specific fix */
-        @supports (-webkit-appearance:none) {
-            .form-input {
-                -webkit-appearance: none;
-            }
-        }
+      }
     </style>
-</head>
-<body class="flex flex-col min-h-screen py-8 px-4">
+  </head>
+  <body class="flex flex-col min-h-screen py-8 px-4">
     <div class="container mx-auto max-w-md">
-        <div class="payment-form p-6 md:p-8 fade-in">
-            <div class="text-center mb-6">
-                <div class="business-logo-placeholder" id="businessLogo">
-                    <i class="fas fa-building text-4xl"></i>
-                </div>
-                <div class="business-name-placeholder" id="businessName">Business Name</div>
-                <p class="text-sm text-gray-500 mt-2">Complete your payment quickly and securely</p>
-            </div>
-            
-            <form id="mpesaPaymentForm" class="space-y-5">
-                <div>
-                    <label for="phoneNumber" class="block text-sm font-medium mb-1">Phone Number</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                            <i class="fas fa-phone"></i>
-                        </span>
-                        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="e.g., 254712345678" 
-                            class="form-input w-full pl-10 py-3 px-4" 
-                            required>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered number starting with 254</p>
-                </div>
-                
-                <div>
-                    <label for="amount" class="block text-sm font-medium mb-1">Amount (KES)</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                            <i class="fas fa-coins"></i>
-                        </span>
-                        <input type="number" id="amount" name="amount" placeholder="e.g., 1000" 
-                            class="form-input w-full pl-10 py-3 px-4" min="1" 
-                            required>
-                    </div>
-                </div>
-                
-                <div>
-                    <label for="service" class="block text-sm font-medium mb-1">Service</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                            <i class="fas fa-tag"></i>
-                        </span>
-                        <select id="service" name="service" 
-                            class="form-input w-full pl-10 py-3 px-4 service-animation bg-white" 
-                            required>
-                            <option value="" disabled selected>Select a service</option>
-                            <option value="Standard">Standard Service</option>
-                            <option value="Premium">Premium Service</option>
-                            <option value="Consultation">Consultation</option>
-                            <option value="Membership">Membership Fee</option>
-                            <option value="Other">Other Payment</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <button type="submit" id="payButton" class="btn-pay w-full py-3 text-white font-medium rounded-lg flex items-center justify-center space-x-2">
-                    <span>Pay Now</span>
-                    <div class="loader" id="paymentLoader"></div>
-                </button>
-            </form>
-            
-            <div id="successMessage" class="status-message success-message">
-                <div class="flex items-start">
-                    <div>
-                        <i class="fas fa-check-circle text-xl mr-2"></i>
-                    </div>
-                    <div>
-                        <p class="font-medium">Payment Initiated Successfully!</p>
-                        <p class="text-sm mt-1">Please check your phone and enter M-PESA PIN to complete payment.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="errorMessage" class="status-message error-message">
-                <div class="flex items-start">
-                    <div>
-                        <i class="fas fa-exclamation-circle text-xl mr-2"></i>
-                    </div>
-                    <div>
-                        <p class="font-medium">Payment Request Failed</p>
-                        <p class="text-sm mt-1" id="errorDetails">There was an error processing your payment request. Please try again.</p>
-                    </div>
-                </div>
-            </div>
+      <div class="payment-form p-6 md:p-8 fade-in">
+        <div class="text-center mb-6">
+          <div class="business-logo-placeholder" id="businessLogo">
+            <i class="fas fa-building text-4xl"></i>
+          </div>
+          <div class="business-name-placeholder" id="businessName">
+            Business Name
+          </div>
+          <p class="text-sm text-gray-500 mt-2">
+            Complete your payment quickly and securely
+          </p>
         </div>
-        
-        <div class="powered-by mt-6 py-3 px-4 rounded-lg text-center fade-in">
-            <p class="text-sm font-medium">Powered by <span class="font-bold text-green-700">CK Marketing Ltd</span></p>
+
+        <form id="mpesaPaymentForm" class="space-y-5">
+          <div>
+            <label for="phoneNumber" class="block text-sm font-medium mb-1"
+              >Phone Number</label
+            >
+            <div class="relative">
+              <span
+                class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"
+              >
+                <i class="fas fa-phone"></i>
+              </span>
+              <input
+                type="tel"
+                id="phoneNumber"
+                name="phoneNumber"
+                placeholder="e.g., 254712345678"
+                class="form-input w-full pl-10 py-3 px-4"
+                required
+              />
+            </div>
+            <p class="text-xs text-gray-500 mt-1">
+              Enter your M-PESA registered number starting with 254
+            </p>
+          </div>
+
+          <div>
+            <label for="amount" class="block text-sm font-medium mb-1"
+              >Amount (KES)</label
+            >
+            <div class="relative">
+              <span
+                class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"
+              >
+                <i class="fas fa-coins"></i>
+              </span>
+              <input
+                type="number"
+                id="amount"
+                name="amount"
+                placeholder="e.g., 1000"
+                class="form-input w-full pl-10 py-3 px-4"
+                min="1"
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="service" class="block text-sm font-medium mb-1"
+              >Service</label
+            >
+            <div class="relative">
+              <span
+                class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"
+              >
+                <i class="fas fa-tag"></i>
+              </span>
+              <select
+                id="service"
+                name="service"
+                class="form-input w-full pl-10 py-3 px-4 service-animation bg-white"
+                required
+              >
+                <option value="" disabled selected>Select a service</option>
+                <option value="Standard">Standard Service</option>
+                <option value="Premium">Premium Service</option>
+                <option value="Consultation">Consultation</option>
+                <option value="Membership">Membership Fee</option>
+                <option value="Other">Other Payment</option>
+              </select>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            id="payButton"
+            class="btn-pay w-full py-3 text-white font-medium rounded-lg flex items-center justify-center space-x-2"
+          >
+            <span>Pay Now</span>
+            <div class="loader" id="paymentLoader"></div>
+          </button>
+        </form>
+
+        <div id="successMessage" class="status-message success-message">
+          <div class="flex items-start">
+            <div>
+              <i class="fas fa-check-circle text-xl mr-2"></i>
+            </div>
+            <div>
+              <p class="font-medium">Payment Initiated Successfully!</p>
+              <p class="text-sm mt-1">
+                Please check your phone and enter M-PESA PIN to complete
+                payment.
+              </p>
+            </div>
+          </div>
         </div>
+
+        <div id="errorMessage" class="status-message error-message">
+          <div class="flex items-start">
+            <div>
+              <i class="fas fa-exclamation-circle text-xl mr-2"></i>
+            </div>
+            <div>
+              <p class="font-medium">Payment Request Failed</p>
+              <p class="text-sm mt-1" id="errorDetails">
+                There was an error processing your payment request. Please try
+                again.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="powered-by mt-6 py-3 px-4 rounded-lg text-center fade-in">
+        <p class="text-sm font-medium">
+          Powered by
+          <span class="font-bold text-green-700">CK Marketing Ltd</span>
+        </p>
+      </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Parse URL parameters for pre-filling form
-            const fillFormFromParams = () => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const phoneParam = urlParams.get('phone');
-                const amountParam = urlParams.get('amount');
-                const serviceParam = urlParams.get('service');
-                const businessNameParam = urlParams.get('business_name');
-                const businessLogoParam = urlParams.get('business_logo');
-                
-                if (phoneParam) document.getElementById('phoneNumber').value = phoneParam;
-                if (amountParam) document.getElementById('amount').value = amountParam;
-                
-                if (serviceParam) {
-                    const serviceSelect = document.getElementById('service');
-                    
-                    // Check if option exists
-                    let optionExists = false;
-                    for (let i = 0; i < serviceSelect.options.length; i++) {
-                        if (serviceSelect.options[i].value === serviceParam) {
-                            serviceSelect.selectedIndex = i;
-                            optionExists = true;
-                            break;
-                        }
-                    }
-                    
-                    // If option doesn't exist, create it
-                    if (!optionExists && serviceParam) {
-                        const option = document.createElement('option');
-                        option.value = serviceParam;
-                        option.text = serviceParam;
-                        serviceSelect.add(option);
-                        serviceSelect.value = serviceParam;
-                    }
-                }
-                
-                if (businessNameParam) {
-                    document.getElementById('businessName').textContent = businessNameParam;
-                    document.title = businessNameParam + " - M-PESA Payment";
-                }
-                
-                if (businessLogoParam) {
-                    const logoPlaceholder = document.getElementById('businessLogo');
-                    logoPlaceholder.innerHTML = '';
-                    const logoImg = document.createElement('img');
-                    logoImg.src = businessLogoParam;
-                    logoImg.alt = businessNameParam || 'Business Logo';
-                    logoImg.className = 'w-full h-full object-contain rounded-full';
-                    logoPlaceholder.appendChild(logoImg);
-                }
-            };
-            
-            // Execute parameter filling
-            fillFormFromParams();
-            
-            // Phone number validation
-            function validatePhoneNumber(phone) {
-                const phoneRegex = /^254[1-9]\d{8}$/;
-                return phoneRegex.test(phone);
+      document.addEventListener("DOMContentLoaded", function () {
+        // Parse URL parameters for pre-filling form
+        const fillFormFromParams = () => {
+          const urlParams = new URLSearchParams(window.location.search);
+          const phoneParam = urlParams.get("phone");
+          const amountParam = urlParams.get("amount");
+          const serviceParam = urlParams.get("service");
+          const businessNameParam = urlParams.get("business_name");
+          const businessLogoParam = urlParams.get("business_logo");
+
+          if (phoneParam)
+            document.getElementById("phoneNumber").value = phoneParam;
+          if (amountParam)
+            document.getElementById("amount").value = amountParam;
+
+          if (serviceParam) {
+            const serviceSelect = document.getElementById("service");
+
+            // Check if option exists
+            let optionExists = false;
+            for (let i = 0; i < serviceSelect.options.length; i++) {
+              if (serviceSelect.options[i].value === serviceParam) {
+                serviceSelect.selectedIndex = i;
+                optionExists = true;
+                break;
+              }
             }
-            
-            // Handle form submission
-            const form = document.getElementById('mpesaPaymentForm');
-            const payButton = document.getElementById('payButton');
-            const loader = document.getElementById('paymentLoader');
-            const successMessage = document.getElementById('successMessage');
-            const errorMessage = document.getElementById('errorMessage');
-            const errorDetails = document.getElementById('errorDetails');
-            
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Reset messages
-                successMessage.classList.remove('active');
-                errorMessage.classList.remove('active');
-                
-                const phoneNumber = document.getElementById('phoneNumber').value.trim();
-                const amount = document.getElementById('amount').value.trim();
-                const service = document.getElementById('service').value;
-                
-                // Validate phone number
-                if (!validatePhoneNumber(phoneNumber)) {
-                    errorDetails.textContent = "Please enter a valid Kenyan phone number starting with 254.";
-                    errorMessage.classList.add('active');
-                    return;
-                }
-                
-                // Validate amount
-                if (amount <= 0) {
-                    errorDetails.textContent = "Please enter a valid amount greater than 0.";
-                    errorMessage.classList.add('active');
-                    return;
-                }
-                
-                // Show loader and disable button
-                loader.style.display = 'block';
-                payButton.disabled = true;
-                
-                // This would be replaced with actual API call in production
-                // Simulating API call for demonstration
-                setTimeout(function() {
-                    // For demo: show success message (this would be based on actual API response)
-                    loader.style.display = 'none';
-                    payButton.disabled = false;
-                    
-                    // For demo: randomly show success or error (in production, this would be based on API response)
-                    const isSuccess = Math.random() > 0.2; // 80% success rate for demo
-                    
-                    if (isSuccess) {
-                        successMessage.classList.add('active');
-                    } else {
-                        errorDetails.textContent = "There was an error connecting to M-PESA. Please try again later.";
-                        errorMessage.classList.add('active');
-                    }
-                }, 2000);
-                
-                // In a real implementation, this is where you would make the actual API call
-                // The code below is commented out as it represents what you would implement
-                /*
+
+            // If option doesn't exist, create it
+            if (!optionExists && serviceParam) {
+              const option = document.createElement("option");
+              option.value = serviceParam;
+              option.text = serviceParam;
+              serviceSelect.add(option);
+              serviceSelect.value = serviceParam;
+            }
+          }
+
+          if (businessNameParam) {
+            document.getElementById("businessName").textContent =
+              businessNameParam;
+            document.title = businessNameParam + " - M-PESA Payment";
+          }
+
+          if (businessLogoParam) {
+            const logoPlaceholder = document.getElementById("businessLogo");
+            logoPlaceholder.innerHTML = "";
+            const logoImg = document.createElement("img");
+            logoImg.src = businessLogoParam;
+            logoImg.alt = businessNameParam || "Business Logo";
+            logoImg.className = "w-full h-full object-contain rounded-full";
+            logoPlaceholder.appendChild(logoImg);
+          }
+        };
+
+        // Execute parameter filling
+        fillFormFromParams();
+
+        // Phone number validation
+        function validatePhoneNumber(phone) {
+          const phoneRegex = /^254[1-9]\d{8}$/;
+          return phoneRegex.test(phone);
+        }
+
+        // Handle form submission
+        const form = document.getElementById("mpesaPaymentForm");
+        const payButton = document.getElementById("payButton");
+        const loader = document.getElementById("paymentLoader");
+        const successMessage = document.getElementById("successMessage");
+        const errorMessage = document.getElementById("errorMessage");
+        const errorDetails = document.getElementById("errorDetails");
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Reset messages
+          successMessage.classList.remove("active");
+          errorMessage.classList.remove("active");
+
+          const phoneNumber = document
+            .getElementById("phoneNumber")
+            .value.trim();
+          const amount = document.getElementById("amount").value.trim();
+          const service = document.getElementById("service").value;
+
+          // Validate phone number
+          if (!validatePhoneNumber(phoneNumber)) {
+            errorDetails.textContent =
+              "Please enter a valid Kenyan phone number starting with 254.";
+            errorMessage.classList.add("active");
+            return;
+          }
+
+          // Validate amount
+          if (amount <= 0) {
+            errorDetails.textContent =
+              "Please enter a valid amount greater than 0.";
+            errorMessage.classList.add("active");
+            return;
+          }
+
+          // Show loader and disable button
+          loader.style.display = "block";
+          payButton.disabled = true;
+
+          // This would be replaced with actual API call in production
+          // Simulating API call for demonstration
+          setTimeout(function () {
+            // For demo: show success message (this would be based on actual API response)
+            loader.style.display = "none";
+            payButton.disabled = false;
+
+            // For demo: randomly show success or error (in production, this would be based on API response)
+            const isSuccess = Math.random() > 0.2; // 80% success rate for demo
+
+            if (isSuccess) {
+              successMessage.classList.add("active");
+            } else {
+              errorDetails.textContent =
+                "There was an error connecting to M-PESA. Please try again later.";
+              errorMessage.classList.add("active");
+            }
+          }, 2000);
+
+          // In a real implementation, this is where you would make the actual API call
+          // The code below is commented out as it represents what you would implement
+          /*
                 // Prepare data for API call
                 const paymentData = {
                     phoneNumber: phoneNumber,
@@ -423,8 +495,8 @@
                     console.error('Error:', error);
                 });
                 */
-            });
         });
+      });
     </script>
-</body>
+  </body>
 </html>

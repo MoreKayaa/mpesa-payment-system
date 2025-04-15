@@ -4,7 +4,7 @@ const firebaseConfig = {
   projectId: process.env.FIREBASE_PROJECT_ID,
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID
+  appId: process.env.FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
@@ -14,4 +14,3 @@ const auth = firebase.auth();
 const storage = firebase.storage(app); // Explicitly pass the app instance
 
 export { app, db, auth, storage };
-  

@@ -1,31 +1,27 @@
 {
-    "businesses": [
-      {
-        "id": "1",
-        "name": "Trimax Fitness Centre",
-        "slug": "trimaxfitnesscentre",
-        "logo": "https://example.com/path/to/trimax-logo.png",
-        "primaryColor": "#ff4500",
-        "shortcode": "174379",
-        "services": [
-          "Gym Membership",
-          "Personal Training",
-          "Group Classes",
-          "Supplements"
-        ]
-      },
-      {
-        "id": "2",
-        "name": "Another Business",
-        "slug": "anotherbusiness",
-        "logo": "https://example.com/path/to/another-logo.png",
-        "primaryColor": "#4285f4", 
-        "shortcode": "174380",
-        "services": [
-          "Service 1",
-          "Service 2",
-          "Service 3"
-        ]
-      }
-    ]
-  }
+  "businesses": [
+    {
+      "id": "1",
+      "name": "Trimax Fitness Centre",
+      "slug": "trimaxfitnesscentre",
+      "logo": "gs://mpesa-payment-system.firebasestorage.app/businesses/trimaxfitness/Trimax Logo.jpg",
+      "primaryColor": "#ff4500",
+      "shortcode": "7901816",
+      "services": [
+        "Gym Membership",
+        "Personal Training",
+        "Group Classes",
+        "Supplements"
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Another Business",
+      "slug": "anotherbusiness",
+      "logo": "https://example.com/path/to/another-logo.png",
+      "primaryColor": "#4285f4",
+      "shortcode": "174380",
+      "services": ["Service 1", "Service 2", "Service 3"]
+    }
+  ]
+}

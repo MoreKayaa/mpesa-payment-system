@@ -1,4 +1,4 @@
-const mpesaFunctions = require('./mpesa');
+const mpesaFunctions = require("./mpesa");
 
 exports.getAccessToken = mpesaFunctions.getAccessToken;
 exports.initiateSTKPush = mpesaFunctions.initiateSTKPush;
